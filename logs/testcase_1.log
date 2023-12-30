@@ -1,0 +1,26 @@
+2023-12-30 07:21:21,159 - INFO - Test pass: Login failed
+2023-12-30 07:21:21,162 - INFO - Test pass: Still in login page
+2023-12-30 07:21:24,339 - INFO - Test pass: Logged out
+2023-12-30 07:22:10,028 - INFO - Test pass: Login failed
+2023-12-30 07:22:10,031 - INFO - Test pass: Still in login page
+2023-12-30 07:22:12,021 - INFO - Test pass: Logged in
+2023-12-30 07:22:13,874 - INFO - Test pass: Logged out
+2023-12-30 08:15:05,907 - INFO - Test pass: Login failed
+2023-12-30 08:15:05,910 - INFO - Test pass: Still in login page
+2023-12-30 08:15:07,449 - INFO - Test pass: Logged in
+2023-12-30 08:15:07,452 - ERROR - Test fail: Doesn't redirect to My account page
+2023-12-30 08:15:09,172 - INFO - Test pass: Logged out
+2023-12-30 08:15:28,759 - INFO - Test pass: Login failed
+2023-12-30 08:15:28,761 - INFO - Test pass: Still in login page
+2023-12-30 08:15:30,159 - INFO - Test pass: Logged in
+2023-12-30 08:15:30,164 - ERROR - Test fail: Doesn't redirect to My account page
+2023-12-30 08:15:32,005 - INFO - Test pass: Logged out
+2023-12-30 08:16:34,399 - INFO - Test pass: Login failed
+2023-12-30 08:16:34,401 - INFO - Test pass: Still in login page
+2023-12-30 08:16:36,184 - INFO - Test pass: Logged in
+2023-12-30 08:16:36,186 - ERROR - Test fail: Doesn't redirect to My account page
+2023-12-30 08:17:11,360 - INFO - Test pass: Login failed
+2023-12-30 08:17:11,362 - INFO - Test pass: Still in login page
+2023-12-30 08:17:13,081 - INFO - Test pass: Logged in
+2023-12-30 08:17:13,086 - INFO - Test pass: Redirect to My account page
+2023-12-30 08:17:14,827 - INFO - Test pass: Logged out
