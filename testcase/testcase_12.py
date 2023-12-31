@@ -44,33 +44,6 @@ def check_quickview(number):
         logging.error("Test fail: Quickview didn't open")
         return
     logging.info("Test pass: Quickview work")
-    
-
-    input_color = driver.find_elements(By.CLASS_NAME,"input-color")
-    
-
-    if len(input_color)!=0:
-        number = random.randint(0,len(input_color)-1)
-        input_color[number].click()
-        time.sleep(3)
-        chosen = driver.find_element(By.CSS_SELECTOR,'span.color span.sr-only')
-        # #print(chosen)
-        time.sleep(3)
-        type = chosen.text
-    selector = driver.find_elements(By.TAG_NAME,"select")
-    if len(selector)==0:
-        return
-
-
-    selector[0].click()
-    time.sleep(3)
-    option_sizes = driver.find_elements(By.TAG_NAME,"option")   
-    number = random.randint(0,len(option_sizes)-1)
-    size = option_sizes[number].text
-
-
-    option_sizes[number].click()
-    time.sleep(3)
 
     try:
         cart_button = driver.find_element(By.CSS_SELECTOR,'div.product-quantity div.add button.add-to-cart')
@@ -91,15 +64,15 @@ def check_quickview(number):
     close_button.click()
     time.sleep(3)
 
-def check_cart():
+def check_cart(number):
     cart_button = driver.find_element(By.CLASS_NAME,"cart-products-count")
     cart_button.click()
     time.sleep(3)
     try:
         cart_div = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.CLASS_NAME,"cart-container")))
         input_amount = driver.find_elements(By.CLASS_NAME,"js-cart-line-product-quantity")
-        if len(input_amount)==2:
-            logging.info("Test pass: Cart have 2 products")
+        if len(input_amount)==number:
+            logging.info(f"Test pass: Cart have {number} products")
         else:
             logging.error(f"Test fail: Cart have {len(input_amount)} products")
     except:
@@ -109,8 +82,11 @@ def check_cart():
 def testcase_12():
     visit_website()
     check_quickview(0)
+    check_quickview(0)
+    check_cart(1)
+    visit_website()
     check_quickview(1)
-    check_cart()
+    check_cart(2)
 
     
     

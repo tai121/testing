@@ -12,7 +12,7 @@ import re
 import random
 
 load_dotenv()
-logging.basicConfig(filename='./logs/testcase_24.log',level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename='./logs/testcase_30.log',level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 driver = webdriver.Chrome()
 action = ActionChains(driver)
 total_product = 0
@@ -23,6 +23,37 @@ def float_value(s):
 def visit_website(website_url="http://teststore.automationtesting.co.uk"):
     driver.get(website_url)
 
+def go_to_login_page():
+    signin_button = driver.find_element(By.CSS_SELECTOR,'div.user-info a')
+    signin_button.click()
+
+def submit_with_valid_info():
+    try:
+        wait = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.NAME,"email")))
+    except:
+        logging.error("The login page cannot be opened")
+    email_input = driver.find_element(By.NAME,"email")
+    password_input = driver.find_element(By.NAME,"password")
+    submit_button = driver.find_element(By.ID, 'submit-login')
+    email_input.clear()
+    password_input.clear()
+    email_input.send_keys(os.getenv("VALID_EMAIL"))
+    password_input.send_keys(os.getenv("CORRECT_PASSWORD"))
+    submit_button.submit()
+    try:
+        logout_button = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.CSS_SELECTOR,"div.user-info a.logout")))
+        logging.info("Test pass: Logged in")
+    except:
+        logging.error("Test fail: Loggin failed")
+
+
+def click_nav():
+    driver.find_elements(By.CSS_SELECTOR,'div.menu ul#top-menu li a')[-1].click()
+    try:
+        wait = WebDriverWait(driver,10).until((EC.presence_of_element_located((By.CSS_SELECTOR,"js-product-list-header"))))
+        logging.info('Test pass: Nav worked')
+    except:
+        logging.error("Test fail: Nav didn't work")
 
 def check_quickview(number):
  
@@ -68,10 +99,11 @@ def check_quickview(number):
 
         option_sizes[number].click()
         time.sleep(2)
-        print("there")
     
     button_up = driver.find_element(By.CSS_SELECTOR,"button.bootstrap-touchspin-up")
     count = random.randint(1,10)
+    global total_product
+    total_product +=count
     for _ in range(count-1):
         button_up.click()
 
@@ -95,55 +127,38 @@ def check_quickview(number):
     close_button.click()
     time.sleep(3) 
 
-def filter():
-    filters = driver.find_elements(By.CSS_SELECTOR,"label.facet-label a")
-    filters[0].click()
-    time.sleep(3)
+
+
+
+def filter(number):
+    try:
+        filters = driver.find_elements(By.CSS_SELECTOR,"label.facet-label a")
+        filters[number].click()
+        time.sleep(3)
+        logging.info("Test pass: Filter was selected")
+    except:
+        logging.error("Test fail: Filter wasn't selected")
 
 def check_cart():
     cart_button = driver.find_element(By.CLASS_NAME,"cart-products-count")
     cart_button.click()
     time.sleep(3)
     global total
-    
+    total = float_value(driver.find_element(By.CSS_SELECTOR,"div.cart-total span.value").text)
+
     try:
         cart_div = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.CLASS_NAME,"cart-container")))
     except:
         logging.error("Test fail: Cart page didn't open")
 
 
-def fill_person_info():
+def complete_order():
     checkout_button = driver.find_element(By.CSS_SELECTOR,"div.checkout div a")
     checkout_button.click()
-    order_page = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.ID,"checkout-personal-information-step")))
-    id_gender = driver.find_elements(By.NAME,'id_gender')
-    id_gender[0].click()
-    first_name = driver.find_element(By.NAME,"firstname")
-    first_name.send_keys("firstname")
-    # time.sleep(1000)
-    last_name = driver.find_element(By.NAME,"lastname")
-    last_name.send_keys("lastname")
-    # time.sleep(1000)
-    last_name = driver.find_element(By.NAME,"email")
-    last_name.send_keys("email@email.com")
-    # time.sleep(1000)
-    check_box = driver.find_element(By.NAME,'psgdpr')
-    check_box.click()
+    wait_load = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.ID,"checkout-personal-information-step")))
 
-    continue_button = driver.find_element(By.NAME,"continue")
-    continue_button.click()
-
-    wait_load = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.ID,"checkout-addresses-step")))
-    address = driver.find_element(By.NAME,"address1")
-    address.send_keys("TP.HCM")
-    city = driver.find_element(By.NAME,'city')
-    city.send_keys('TP.HCM')
-    postcode = driver.find_element(By.NAME,'postcode')
-    postcode.send_keys("12345")
-    select = driver.find_element(By.TAG_NAME,'select')
-    select.click()
-    options = driver.find_elements(By.TAG_NAME,'option')
-    options[2].click()
+    address_list = driver.find_elements(By.NAME,'id_address_delivery')
+    address_list[random.randint(0,6)].click()
     continue_button = driver.find_element(By.NAME,'confirm-addresses')
     continue_button.click()
     wait_load = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.NAME,"confirmDeliveryOption")))
@@ -151,33 +166,41 @@ def fill_person_info():
     continue_button = driver.find_element(By.NAME,'confirmDeliveryOption')
     continue_button.click()
     wait_load = WebDriverWait(driver,1000).until(EC.presence_of_element_located((By.CSS_SELECTOR,"input.ps-shown-by-js")))
-    pay_checkbox = driver.find_elements(By.CSS_SELECTOR,"input.ps-shown-by-js")[1]
+
+    pay_checkbox = driver.find_elements(By.CSS_SELECTOR,"input.ps-shown-by-js")[0]
     pay_checkbox.click()
+
     check_box = driver.find_element(By.ID,'conditions_to_approve[terms-and-conditions]')
     check_box.click()
     continue_button = driver.find_element(By.CSS_SELECTOR,'div#payment-confirmation div button')
     continue_button.click()
-    try:
-        wait_load = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.CSS_SELECTOR,"tr.total-value")))
-        logging.info('Test pass: Ordered')
-    except:
-        logging.error('Test fail: Order failed')
+    wait_load = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.CSS_SELECTOR,"tr.total-value")))
+def search(key):
+    search_input = driver.find_element(By.NAME,"s")
+    search_button = driver.find_element(By.CSS_SELECTOR,"i.search")
 
-def testcase_24():
+    search_input.send_keys(key)
+    search_button.click()
+    time.sleep(2)
+
+def testcase_30():
     visit_website('http://teststore.automationtesting.co.uk/2-home')
-    driver.find_element(By.CSS_SELECTOR,'a.next').click()
-    wait = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.CSS_SELECTOR,"a.previous")))
-    check_quickview(1)
-    filter()
-    check_quickview(-2)
-    check_cart()
-    fill_person_info()
+    filter(2)
+    count_product = len(driver.find_elements(By.CSS_SELECTOR,"article.product-miniature"))
+    for i in range(count_product):
+        check_quickview(i)
+    # print(driver.find_elements(By.CSS_SELECTOR,'div.blockcart div span')[1].text)
+    matches = re.findall(r'\d+', driver.find_elements(By.CSS_SELECTOR,'div.blockcart div span')[1].text)
+    if matches:
+        if total_product == int(matches[0]):
+            logging.info("Test pass: All product was added to cart")
+        else:
+            logging.error("Test fail: Amount of product in cart is wrong")
+    else:
+        logging.error("Test fail: Cart error")
 
     
-    
-    
 
-    
 
 if __name__ == "__main__":
-    testcase_24()
+    testcase_30()

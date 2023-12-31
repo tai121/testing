@@ -29,7 +29,7 @@ def filter():
         if 'Price, low to high' in filter.text:
             filter.click()
     time.sleep(2)
-    # driver.implicitly_wait(4)
+
     if driver.current_url == "http://teststore.automationtesting.co.uk/3-clothes?order=product.price.asc":
         logging.info("Test pass: Filter successed")
     else:

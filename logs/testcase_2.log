@@ -8,3 +8,5 @@
 2023-12-30 08:14:38,234 - INFO - Test pass: Search successed
 2023-12-30 08:14:38,282 - ERROR - Test fail: 6/8 products don't contain the key
 2023-12-30 10:58:37,141 - INFO - Test pass: The page already displays all products
+2023-12-31 19:12:10,599 - INFO - Test pass: Search successed
+2023-12-31 19:12:10,695 - ERROR - Test fail: 6/8 products don't contain the key

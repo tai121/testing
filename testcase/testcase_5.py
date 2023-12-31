@@ -12,32 +12,41 @@ import re
 load_dotenv()
 logging.basicConfig(filename='./logs/testcase_5.log',level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 driver = webdriver.Chrome()
-website_url = "http://teststore.automationtesting.co.uk/6-accessories"
+website_url = "http://teststore.automationtesting.co.uk/2-home"
 
 
 
 def visit_website():
     driver.get(website_url)
 
-def get_total_product():
-    total_element = driver.find_element(By.CSS_SELECTOR,"div.total-products p")
-    matches = re.findall(r'\d+', total_element.text)
+def filter(number):
+    try:
+        filters = driver.find_elements(By.CSS_SELECTOR,"label.facet-label a")
+        filters[number].click()
+        time.sleep(3)
+        logging.info("Test pass: Filter was selected")
+    except:
+        logging.error("Test fail: Filter wasn't selected")
 
-    if matches:
-        return int(matches[0])
 
-
-def verify_number_of_product(total):
-    list_product=driver.find_elements(By.CSS_SELECTOR,"article.product-miniature")
-    if total == len(list_product):
-        logging.info(f"Test pass: The page already displays all products")
-    else:
-        logging.error(f"Test fail: The number of products displayed is incorrect")
+def clear_each_filter(number):
+    try:
+        for i in range(number):
+            driver.find_elements(By.CSS_SELECTOR,'li.filter-block a.js-search-link i')[0].click()
+            time.sleep(3)
+        if len(driver.find_elements(By.CSS_SELECTOR,'li.filter-block a.js-search-link i')) ==0:
+            logging.info("Test pass: All filter closed")
+        else:
+            logging.error(f"Test fail: {len(driver.find_elements(By.CSS_SELECTOR,'li.filter-block a.js-search-link i'))} didn't close")
+    except:
+        logging.error("Test fail: Filter didn't close")
 
 def testcase_5():
     visit_website()
-    
-    verify_number_of_product(get_total_product())
+    filter(0)
+    filter(1)
+    filter(2)
+    clear_each_filter(3)
 
 if __name__ == "__main__":
     testcase_5()
