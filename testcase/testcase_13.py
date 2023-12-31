@@ -12,13 +12,12 @@ import re
 import random
 
 load_dotenv()
-logging.basicConfig(filename='./logs/testcase_10.log',level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename='./logs/testcase_13.log',level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 driver = webdriver.Chrome()
 action = ActionChains(driver)
 website_url = "http://teststore.automationtesting.co.uk"
-size = None
-type = None
-
+first_product = 1
+second_product = 2
 def float_value(s):
     return float(s[1:])
 
@@ -27,12 +26,11 @@ def visit_website():
     driver.get(website_url)
 
 
-def check_quickview():
-    global size, type
+def check_quickview(number):
+ 
     product_element = driver.find_elements(By.CLASS_NAME,"product-thumbnail")
-    number = random.randint(0,len(product_element)-1)
-    number = 0
     chosend_element = product_element[number]
+    
     action.move_to_element(chosend_element).perform()
     quick_view = driver.find_elements(By.CSS_SELECTOR,'a.quick-view')
     try:
@@ -47,14 +45,16 @@ def check_quickview():
         return
     logging.info("Test pass: Quickview work")
     
+
     input_color = driver.find_elements(By.CLASS_NAME,"input-color")
+    
 
     if len(input_color)!=0:
         number = random.randint(0,len(input_color)-1)
         input_color[number].click()
         time.sleep(3)
         chosen = driver.find_element(By.CSS_SELECTOR,'span.color span.sr-only')
-        # print(chosen)
+        # #print(chosen)
         time.sleep(3)
         type = chosen.text
     selector = driver.find_elements(By.TAG_NAME,"select")
@@ -71,11 +71,7 @@ def check_quickview():
 
     option_sizes[number].click()
     time.sleep(3)
-    
 
-def check_cart():
-
-    
     try:
         cart_button = driver.find_element(By.CSS_SELECTOR,'div.product-quantity div.add button.add-to-cart')
     
@@ -91,33 +87,33 @@ def check_cart():
         logging.error("Test fail: Cart didn't open")
         return
     time.sleep(3)
+    close_button = driver.find_element(By.CSS_SELECTOR,'button.close')
+    close_button.click()
+    time.sleep(3)
 
-    elements = driver.find_elements(By.CSS_SELECTOR,'div.row div.col-md-6 span strong')
-    test_type = False
-    test_size = False
-    
-    for element in elements:
-        if type and type in element.text:
-            test_type = True
-        if size and size in element.text:
-            test_size = True
-    
-    if type:
-        if test_type:
-            logging.info("Test pass: True type")
+def check_cart():
+    cart_button = driver.find_element(By.CLASS_NAME,"cart-products-count")
+    cart_button.click()
+    time.sleep(3)
+    try:
+        cart_div = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.CLASS_NAME,"cart-container")))
+        delete_button = driver.find_element(By.CLASS_NAME,"remove-from-cart")
+        delete_button.click()
+        time.sleep(3)
+        span_deletet = driver.find_elements(By.CLASS_NAME,"no-items")
+        if len(span_deletet)>0 and 'There are no more items in your cart' in span_deletet[0].text:
+            logging.info("Test pass: Deleted")
         else:
-            logging.error("Test fail: Wrong type")
-    if size:
-        if test_size:
-            logging.info("Test pass: True size")
-        else:
-            logging.error("Test fail: Wrong size")
+            logging.error("Test fail: Delete fail")
+    except:
+        logging.error("Test fail: Cart page didn't open")
 
-def testcase_10():
+
+def testcase_13():
     visit_website()
-    check_quickview()
+    check_quickview(0)
     check_cart()
-    
+
     
     
     
@@ -125,4 +121,4 @@ def testcase_10():
     
 
 if __name__ == "__main__":
-    testcase_10()
+    testcase_13()

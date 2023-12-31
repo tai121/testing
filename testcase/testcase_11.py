@@ -12,13 +12,13 @@ import re
 import random
 
 load_dotenv()
-logging.basicConfig(filename='./logs/testcase_10.log',level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename='./logs/testcase_11.log',level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 driver = webdriver.Chrome()
 action = ActionChains(driver)
 website_url = "http://teststore.automationtesting.co.uk"
 size = None
 type = None
-
+count = 1
 def float_value(s):
     return float(s[1:])
 
@@ -28,7 +28,7 @@ def visit_website():
 
 
 def check_quickview():
-    global size, type
+    global size, type,count
     product_element = driver.find_elements(By.CLASS_NAME,"product-thumbnail")
     number = random.randint(0,len(product_element)-1)
     number = 0
@@ -47,14 +47,16 @@ def check_quickview():
         return
     logging.info("Test pass: Quickview work")
     
+
     input_color = driver.find_elements(By.CLASS_NAME,"input-color")
+    
 
     if len(input_color)!=0:
         number = random.randint(0,len(input_color)-1)
         input_color[number].click()
         time.sleep(3)
         chosen = driver.find_element(By.CSS_SELECTOR,'span.color span.sr-only')
-        # print(chosen)
+        # #print(chosen)
         time.sleep(3)
         type = chosen.text
     selector = driver.find_elements(By.TAG_NAME,"select")
@@ -71,6 +73,11 @@ def check_quickview():
 
     option_sizes[number].click()
     time.sleep(3)
+    button_up = driver.find_element(By.CSS_SELECTOR,"button.bootstrap-touchspin-up")
+    count += random.randint(1,10)
+    for _ in range(count-1):
+        button_up.click()
+        time.sleep(2)
     
 
 def check_cart():
@@ -95,13 +102,14 @@ def check_cart():
     elements = driver.find_elements(By.CSS_SELECTOR,'div.row div.col-md-6 span strong')
     test_type = False
     test_size = False
-    
+    test_count = False
     for element in elements:
         if type and type in element.text:
             test_type = True
         if size and size in element.text:
             test_size = True
-    
+        if str(count) in element.text:
+            test_count = True
     if type:
         if test_type:
             logging.info("Test pass: True type")
@@ -112,8 +120,11 @@ def check_cart():
             logging.info("Test pass: True size")
         else:
             logging.error("Test fail: Wrong size")
-
-def testcase_10():
+    if test_count:
+        logging.info("Test pass: True amount")
+    else:
+        logging.error("Test fail: Wrong amount")
+def testcase_11():
     visit_website()
     check_quickview()
     check_cart()
@@ -125,4 +136,4 @@ def testcase_10():
     
 
 if __name__ == "__main__":
-    testcase_10()
+    testcase_11()
