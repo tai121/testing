@@ -96,12 +96,9 @@ def check_cart():
     time.sleep(3)
     global total
     total = float_value(driver.find_element(By.CSS_SELECTOR,"div.cart-total span.value").text)
-
+    
     try:
         cart_div = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.CLASS_NAME,"cart-container")))
-        
-
-
     except:
         logging.error("Test fail: Cart page didn't open")
 

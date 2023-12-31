@@ -55,7 +55,6 @@ def check_quickview():
         time.sleep(3)
         chosen = driver.find_element(By.CSS_SELECTOR,'span.color span.sr-only')
         # print(chosen)
-        time.sleep(3)
         type = chosen.text
     selector = driver.find_elements(By.TAG_NAME,"select")
     if len(selector)==0:
